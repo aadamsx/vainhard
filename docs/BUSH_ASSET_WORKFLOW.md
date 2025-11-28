@@ -59,28 +59,51 @@
 
 Use **Meshy 6 Preview**. Turn **Symmetry OFF**.
 
-### Standard Bush Prompt
+**Key tips for better results:**
+- Be VERY specific about dimensions and shape
+- Mention "video game asset" and "single solid mesh"
+- Describe the exact silhouette you want
+- Always use negative prompts
+
+### Standard Bush (Round Clump) - WORKING
 ```
-Stylized low poly MOBA bush, dense foliage, hand-painted texture style,
-fantasy game asset, gradient green to yellowish-brown leaves, organic
-clumpy shape, soft ambient occlusion shading, slight cel-shaded look,
-single mesh.
+A round bushy shrub for a fantasy video game, approximately 1 meter tall
+and 1 meter wide, dense clustered leaves, stylized hand-painted look like
+League of Legends or Vainglory, vibrant green top fading to dark green
+at base, cel-shaded style, single solid mesh, game-ready asset, low poly
+stylized foliage, no trunk visible, leaves only
 ```
 
-**Negative:** `Realistic, high poly, noisy, blurry, flowers, berries`
+**Negative:** `realistic, photorealistic, high poly, flowers, berries, fruits, tree, trunk, branches visible, multiple objects, scene, ground, dirt, rocks`
 
-### Long Bush Prompt
+### Long Bush (Hedge Shape)
 ```
-Stylized low poly MOBA bush, elongated wide hedge, slightly curved shape,
-dense foliage, hand-painted texture, fantasy style, gradient green to yellow,
-game asset.
+A wide rectangular hedge bush for a fantasy MOBA video game, shaped like
+a horizontal rectangle, 2 meters wide and 0.8 meters tall and 0.5 meters
+deep, trimmed flat top like a garden hedge, dense green leaves, stylized
+hand-painted texture like Vainglory or League of Legends, vibrant green
+color, cel-shaded look, single solid mesh, game-ready low poly asset
 ```
 
-### Corner Bush Prompt
+**Negative:** `realistic, photorealistic, round, spherical, tall, tree, trunk, flowers, berries, multiple objects, scene, ground, high poly`
+
+### Corner Bush (L-Shape Thicket)
 ```
-Stylized low poly MOBA bush, L-shaped corner thicket, large dense foliage,
-hand-painted texture, fantasy style, gradient green to brown, game asset.
+An L-shaped corner bush for a fantasy MOBA video game, shaped like the
+letter L when viewed from above, approximately 2 meters on each arm of
+the L, 1 meter tall, dense wild foliage, stylized hand-painted texture
+like Dota 2 or League of Legends, dark green to brown gradient,
+cel-shaded style, single solid mesh, game-ready low poly asset
 ```
+
+**Negative:** `realistic, photorealistic, round, square, symmetrical, tree, trunk, flowers, high poly, multiple objects, scene`
+
+### Pro Tips for Meshy
+1. **If it comes out wrong:** Regenerate 3-4 times, pick the best one
+2. **Too round?** Add "rectangular", "flat top", "trimmed" to prompt
+3. **Too tall?** Specify exact dimensions: "0.5 meters tall"
+4. **Multiple meshes?** Add "single solid mesh, one object only"
+5. **Weird colors?** Be specific: "vibrant forest green, RGB 34 139 34"
 
 ---
 
