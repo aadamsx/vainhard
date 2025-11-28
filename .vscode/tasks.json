@@ -1,0 +1,63 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Open Unity",
+            "type": "shell",
+            "command": "open",
+            "args": ["-a", "Unity", "${workspaceFolder}"],
+            "problemMatcher": []
+        },
+        {
+            "label": "Watch Unity Logs",
+            "type": "shell",
+            "command": "tail -f ~/Library/Logs/Unity/Editor.log | grep --line-buffered -iE '(error|exception|warning|attack|target|tapped|move|spawn|damage|died)'",
+            "isBackground": true,
+            "problemMatcher": [],
+            "presentation": {
+                "reveal": "always",
+                "panel": "dedicated",
+                "echo": false
+            }
+        },
+        {
+            "label": "Unity: Enter Play Mode",
+            "type": "shell",
+            "command": "/Applications/Unity/Hub/Editor/2022.3.62f3/Unity.app/Contents/MacOS/Unity",
+            "args": [
+                "-projectPath", "${workspaceFolder}",
+                "-executeMethod", "UnityEditor.EditorApplication.EnterPlaymode",
+                "-logFile", "-"
+            ],
+            "problemMatcher": [],
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            }
+        },
+        {
+            "label": "Unity: Refresh & Play",
+            "type": "shell",
+            "command": "osascript -e 'tell application \"Unity\" to activate' && sleep 0.5 && osascript -e 'tell application \"System Events\" to keystroke \"p\" using command down'",
+            "problemMatcher": [],
+            "presentation": {
+                "reveal": "silent"
+            }
+        },
+        {
+            "label": "Build iOS",
+            "type": "shell",
+            "command": "/Applications/Unity/Hub/Editor/2022.3.62f3/Unity.app/Contents/MacOS/Unity",
+            "args": [
+                "-projectPath", "${workspaceFolder}",
+                "-buildTarget", "iOS",
+                "-executeMethod", "BuildScript.BuildiOS",
+                "-logFile", "-",
+                "-batchmode",
+                "-quit"
+            ],
+            "problemMatcher": [],
+            "group": "build"
+        }
+    ]
+}
