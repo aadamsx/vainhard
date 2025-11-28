@@ -1,73 +1,127 @@
-# Vainglory MOBA: Jungle Bush Asset Workflow
+# Bush Asset Workflow
 
-This guide details the workflow for generating, coloring, and placing the 3 specific bush types required to recreate the Halcyon Fold jungle art style.
+## Quick Start - Import a New Bush
 
-## 1. The Asset List (What to Generate)
-
-We need 3 distinct bush shapes to avoid a repetitive look.
-
-| Asset Name | Shape Description | Usage Location |
-| :--- | :--- | :--- |
-| **Bush_Standard** | Round, clumpy, dense. Roughly 1x1 aspect ratio. | Tri-Bushes, Lane Ganks. |
-| **Bush_Long** | Elongated, hedge-like, slightly curved. Roughly 2x1 aspect ratio. | Shop "Mustache" bushes. |
-| **Bush_Corner** | L-Shaped or a large thicket. | Minion Mines. |
+1. **Drop GLB into:** `Assets/Prefabs/Map/Stylized_low_poly_MOB_1128001515_generate.glb`
+2. **Run menu:** `Vainglory > Setup Bushes`
+3. **Done.** Play the game.
 
 ---
 
-## 2. AI Generation Prompts (Meshy.ai)
+## Current Working Files
+
+| File | What It Is |
+|------|------------|
+| `Assets/Prefabs/Map/Stylized_low_poly_MOB_1128001515_generate.glb` | Original GLB from Meshy.ai (35MB) |
+| `Assets/Prefabs/Map/Bush_Exported.obj` | Auto-converted OBJ (190MB) - Unity reads this |
+| `Assets/Prefabs/Map/Bush_Standard_Colored.prefab` | The working prefab |
+| `Assets/Prefabs/Map/BushMaterial.mat` | Green material |
+| `Assets/Resources/Prefabs/Bush_Standard_Colored.prefab` | Runtime copy for Resources.Load() |
+| `Assets/Scripts/Editor/SetupBushes.cs` | The import script |
+
+---
+
+## What SetupBushes Does
+
+1. Loads GLB via UnityGLTF (installed package)
+2. Extracts mesh (vertices, UVs, normals, triangles)
+3. Writes to OBJ file (Unity native format)
+4. Creates prefab with:
+   - MeshFilter → references OBJ mesh
+   - MeshRenderer → green material
+   - BoxCollider → for collision
+   - BushColorizer → gradient coloring
+5. Copies prefab to Resources/
+6. Assigns to MapGenerator
+7. Regenerates map
+
+---
+
+## To Replace With a New Bush Model
+
+**Option A: Same filename**
+1. Delete the old GLB
+2. Rename your new GLB to `Stylized_low_poly_MOB_1128001515_generate.glb`
+3. Drop into `Assets/Prefabs/Map/`
+4. Run `Vainglory > Setup Bushes`
+
+**Option B: Different filename**
+1. Drop new GLB into `Assets/Prefabs/Map/`
+2. Edit `Assets/Scripts/Editor/SetupBushes.cs` line ~16:
+   ```csharp
+   string glbPath = "Assets/Prefabs/Map/YOUR_NEW_FILE.glb";
+   ```
+3. Run `Vainglory > Setup Bushes`
+
+---
+
+## AI Generation (Meshy.ai)
 
 Use **Meshy 6 Preview**. Turn **Symmetry OFF**.
 
-### A. Standard Bush (The "Clump")
-*   **Prompt:** "Stylized low poly MOBA bush, dense foliage, hand-painted texture style, fantasy game asset, gradient green to yellowish-brown leaves, organic clumpy shape, soft ambient occlusion shading, slight cel-shaded look, single mesh."
-*   **Negative Prompt:** "Realistic, high poly, noisy, blurry, flowers, berries."
+### Standard Bush Prompt
+```
+Stylized low poly MOBA bush, dense foliage, hand-painted texture style,
+fantasy game asset, gradient green to yellowish-brown leaves, organic
+clumpy shape, soft ambient occlusion shading, slight cel-shaded look,
+single mesh.
+```
 
-### B. Long Bush (The "Hedge")
-*   **Prompt:** "Stylized low poly MOBA bush, **elongated wide hedge**, slightly curved shape, dense foliage, hand-painted texture, fantasy style, gradient green to yellow, game asset."
+**Negative:** `Realistic, high poly, noisy, blurry, flowers, berries`
 
-### C. Corner Bush (The "Thicket")
-*   **Prompt:** "Stylized low poly MOBA bush, **L-shaped corner thicket**, large dense foliage, hand-painted texture, fantasy style, gradient green to brown, game asset."
+### Long Bush Prompt
+```
+Stylized low poly MOBA bush, elongated wide hedge, slightly curved shape,
+dense foliage, hand-painted texture, fantasy style, gradient green to yellow,
+game asset.
+```
 
----
-
-## 3. Coloring & Materials (Unity Setup)
-
-AI textures can sometimes look washed out or too uniform. To get the **Vainglory Look** (vibrant top, dark bottom):
-
-1.  **Import:** Drag `.glb` file into `Assets/Prefabs/Map/`.
-2.  **Extract Materials:** Click the model -> Inspector -> Materials Tab -> Extract Materials.
-3.  **Shader Setup:** Use `Universal Render Pipeline/Lit` or `Simple Lit`.
-4.  **The Color Tweak:**
-    *   **Base Map:** Assign the AI-generated texture.
-    *   **Color Tint:** Set to `Hex #CCCCCC` (Light Grey) to slightly darken it if it's too bright.
-    *   **Smoothness:** Set to `0.0` or `0.1`. Bushes should be matte, not shiny.
-    *   **Emission (Optional):** If it looks too dark in shadows, add a very faint dark green emission (`#001100`) to simulate subsurface scattering.
-
-**Alternative: Custom Gradient Shader**
-If the AI texture is bad, create a new Material with a standard green color (`#2D5A2D`) and use Unity's **Fog** to tint the bottom, or paint vertex colors in Blender.
+### Corner Bush Prompt
+```
+Stylized low poly MOBA bush, L-shaped corner thicket, large dense foliage,
+hand-painted texture, fantasy style, gradient green to brown, game asset.
+```
 
 ---
 
-## 4. Placement Guide (Where they go)
+## Bush Placement in Map
 
-Assign these Prefabs to the `MapGenerator` script in the Inspector.
+Defined in `MapGenerator.cs` → `CreateBushAreas()`:
 
-### Slot 1: `Bush Standard`
-This prefab will be placed at:
-*   **Tri-Bushes:** The triangular ambush spots near the map center (X=75, Z=25).
-*   **Lane Gank Bushes:** The strategic hiding spots near the lane walls (X=40, Z=32).
+```csharp
+// Left jungle (4 bushes)
+CreateBush(parent, new Vector3(35, 0.05f, 12), new Vector2(4, 3), "Standard");
+CreateBush(parent, new Vector3(45, 0.05f, 8), new Vector2(5, 3), "Long");
+CreateBush(parent, new Vector3(35, 0.05f, 28), new Vector2(4, 3), "Standard");
+CreateBush(parent, new Vector3(45, 0.05f, 32), new Vector2(5, 3), "Long");
 
-### Slot 2: `Bush Long`
-This prefab will be placed at:
-*   **Jungle Shop:** The two bushes flanking the shopkeeper at the bottom (X=72 & X=88, Z=4).
-
-### Slot 3: `Bush Corner`
-This prefab will be placed at:
-*   **Minion Mines:** The large bushes providing cover near the mines (X=48 & X=112, Z=18).
+// Right jungle (4 bushes)
+CreateBush(parent, new Vector3(125, 0.05f, 12), new Vector2(4, 3), "Standard");
+CreateBush(parent, new Vector3(115, 0.05f, 8), new Vector2(5, 3), "Long");
+CreateBush(parent, new Vector3(125, 0.05f, 28), new Vector2(4, 3), "Standard");
+CreateBush(parent, new Vector3(115, 0.05f, 32), new Vector2(5, 3), "Long");
+```
 
 ---
 
-## 5. Final Polish Checklist
-*   [ ] **Colliders:** Did you add a `BoxCollider` to the prefab? Players need to be able to mouse-over or collide (if intended).
-*   [ ] **Scale:** AI models often import tiny. Check `MapGenerator.cs` scaling logic or adjust the Prefab's scale factor in import settings to `100`.
-*   [ ] **Grounding:** Ensure the bush bottom sinks slightly into the ground so it doesn't look like it's floating.
+## Troubleshooting
+
+**Bushes invisible:**
+```bash
+# Check if mesh is null in prefab
+cat Assets/Prefabs/Map/Bush_Standard_Colored.prefab | grep m_Mesh
+```
+- `m_Mesh: {fileID: 0}` = broken, run Setup Bushes again
+- `m_Mesh: {fileID: 123, guid: abc}` = good
+
+**GLB not loading:**
+- Make sure UnityGLTF package is installed (check Package Manager)
+- The GLB won't show in Project view - that's normal, the script can still load it
+
+**Wrong scale:**
+- Edit `CreateBush()` in MapGenerator.cs
+- Or adjust prefab Transform scale
+
+**Wrong color:**
+- Edit `Assets/Prefabs/Map/BushMaterial.mat`
+- Or edit `BushColorizer.cs` gradient values
